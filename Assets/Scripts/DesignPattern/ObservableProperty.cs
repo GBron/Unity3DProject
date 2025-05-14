@@ -1,38 +1,47 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ObseravableProperty<T>
+
+namespace DesignPattern
 {
-    [SerializeField] private T _value;
-    public T Value
+    public class ObseravableProperty<T>
     {
-        get => _value;
-        set
+        [SerializeField] private T _value;
+        public T Value
         {
-            if (_value.Equals(value)) return;
-            _value = value;
-            Notify();
+            get => _value;
+            set
+            {
+                if (_value.Equals(value)) return;
+                _value = value;
+                Notify();
+            }
         }
-    }
-    private UnityEvent<T> _onValueChanged = new();
+        private UnityEvent<T> _onValueChanged = new();
 
-    public void Subscribe(UnityAction<T> action)
-    {
-        _onValueChanged.AddListener(action);
-    }
+        public ObseravableProperty(T value = default)
+        {
+            _value = value;
+        }
 
-    public void Unsubscribe(UnityAction<T> action)
-    {
-        _onValueChanged.RemoveListener(action);
-    }
+        public void Subscribe(UnityAction<T> action)
+        {
+            _onValueChanged.AddListener(action);
+        }
 
-    public void UnsubscribeAll()
-    {
-        _onValueChanged.RemoveAllListeners();
-    }
+        public void Unsubscribe(UnityAction<T> action)
+        {
+            _onValueChanged.RemoveListener(action);
+        }
 
-    private void Notify()
-    {
-        _onValueChanged.Invoke(_value);
+        public void UnsubscribeAll()
+        {
+            _onValueChanged.RemoveAllListeners();
+        }
+
+        private void Notify()
+        {
+            _onValueChanged.Invoke(_value);
+        }
     }
 }
