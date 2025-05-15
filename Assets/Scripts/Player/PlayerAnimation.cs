@@ -13,15 +13,28 @@ public class PlayerAnimation : MonoBehaviour
         _playerStatus = GetComponent<PlayerStatus>();
     }
 
-    public void SetAiming()
+    public void SetAiming(bool value)
     {
-        bool isAiming = _playerStatus.IsAiming.Value;
-        _animator.SetBool("IsAiming", isAiming);
+        _animator.SetBool("IsAiming", value);
     }
 
-    public void SetMove()
+    public void SetMove(bool value)
     {
-        bool isMoving = _playerStatus.IsMoving.Value;
-        _animator.SetBool("IsMoving", isMoving);
+        _animator.SetBool("IsMoving", value);
+    }
+
+    public void SetAttack(bool value)
+    {
+        _animator.SetBool("IsAttacking", value);
+    }
+
+    public void SetX(float value)
+    {
+        _animator.SetFloat("X", value);
+    }
+
+    public void SetZ(float value)
+    {
+        _animator.SetFloat("Z", value);
     }
 }

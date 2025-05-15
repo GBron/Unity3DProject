@@ -10,7 +10,9 @@ public class PlayerController : MonoBehaviour
     private PlayerAnimation _animation;
 
     [SerializeField] private CinemachineVirtualCamera _aimCamera;
+    [SerializeField] private Gun _gun;
     [SerializeField] private KeyCode _aimKey = KeyCode.Mouse1;
+    [SerializeField] private KeyCode _shootKey = KeyCode.Mouse0;
 
     private void Awake() => Init();
     private void OnEnable() => SubscribeEnvets();
@@ -29,9 +31,20 @@ public class PlayerController : MonoBehaviour
         if (!IsControlActivate) return;
 
         HandleMovement();
-            _animation.SetMove();
         HandleAiming();
-            _animation.SetAiming();
+        HandleShooting();
+    }
+
+    private void HandleShooting()
+    {
+        if(_status.IsAiming.Value && Input.GetKey(_shootKey))
+        {
+            _status.IsAttacking.Value = _gun.Shoot();
+        }
+        else
+        {
+            _status.IsAttacking.Value = false;
+        }
     }
 
     private void HandleMovement()
@@ -51,6 +64,12 @@ public class PlayerController : MonoBehaviour
 
         _movement.SetAvatarRotation(avatarDir);
 
+        if (_status.IsAiming.Value)
+        {
+            Vector3 input = _movement.GetInputDiretion();
+            _animation.SetX(input.x);
+            _animation.SetZ(input.z);
+        }
     }
 
     private void HandleAiming()
@@ -61,10 +80,16 @@ public class PlayerController : MonoBehaviour
     public void SubscribeEnvets()
     {
         _status.IsAiming.Subscribe(_aimCamera.gameObject.SetActive);
+        _status.IsAiming.Subscribe(_animation.SetAiming);
+        _status.IsMoving.Subscribe(_animation.SetMove);
+        _status.IsAttacking.Subscribe(_animation.SetAttack);
     }
 
     public void UnsubscribeEvents()
     {
         _status.IsAiming.Unsubscribe(_aimCamera.gameObject.SetActive);
+        _status.IsAiming.Unsubscribe(_animation.SetAiming);
+        _status.IsMoving.Unsubscribe(_animation.SetMove);
+        _status.IsAttacking.Unsubscribe(_animation.SetAttack);
     }
 }
