@@ -57,8 +57,6 @@ public class Gun : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, _attackRange, _targetLayer))
         {
-            if (hit.transform.gameObject.layer != 3 && hit.transform.gameObject.layer != 6)
-                Destroy(hit.transform.gameObject);
             return hit.transform.gameObject;
         }
 
