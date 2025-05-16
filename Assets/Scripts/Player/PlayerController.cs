@@ -1,7 +1,7 @@
 using Cinemachine;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamagable
 {
     public bool IsControlActivate { get; set; } = true;
 
@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private CinemachineVirtualCamera _aimCamera;
     [SerializeField] private Gun _gun;
+    [SerializeField] private HpGaugeUI _hpGaugeUI;
 
     [SerializeField] private KeyCode _aimKey = KeyCode.Mouse1;
     [SerializeField] private KeyCode _shootKey = KeyCode.Mouse0;
@@ -25,6 +26,9 @@ public class PlayerController : MonoBehaviour
         _movement = GetComponent<PlayerMovement>();
         _status = GetComponent<PlayerStatus>();
         _animation = GetComponent<PlayerAnimation>();
+
+        _hpGaugeUI.SetImageFillAmount(1);
+        _status.CurrentHp.Value = _status.MaxHp;
     }
 
     private void HandlePlayerControl()
@@ -78,12 +82,31 @@ public class PlayerController : MonoBehaviour
         _status.IsAiming.Value = Input.GetKey(_aimKey);
     }
 
+    public void TakeDamage(int value)
+    {
+        _status.CurrentHp.Value -= value;
+
+        if(_status.CurrentHp.Value <= 0) Dead();
+    }
+
+    public void RecoveryHp(int value)
+    {
+        int hp = _status.CurrentHp.Value + value;
+        _status.CurrentHp.Value = Mathf.Clamp(hp, 0, _status.MaxHp);
+    }
+
+    public void Dead()
+    {
+        Debug.Log("플레이어 사망");
+    }
+
     public void SubscribeEnvets()
     {
         _status.IsAiming.Subscribe(_aimCamera.gameObject.SetActive);
         _status.IsAiming.Subscribe(_animation.SetAiming);
         _status.IsMoving.Subscribe(_animation.SetMove);
         _status.IsAttacking.Subscribe(_animation.SetAttack);
+        _status.CurrentHp.Subscribe(SetHpGaugeUI);
     }
 
     public void UnsubscribeEvents()
@@ -92,5 +115,12 @@ public class PlayerController : MonoBehaviour
         _status.IsAiming.Unsubscribe(_animation.SetAiming);
         _status.IsMoving.Unsubscribe(_animation.SetMove);
         _status.IsAttacking.Unsubscribe(_animation.SetAttack);
+        _status.CurrentHp.Unsubscribe(SetHpGaugeUI);
+    }
+
+    private void SetHpGaugeUI(int currentHp)
+    {
+        float hp = (float)currentHp / _status.MaxHp;
+        _hpGaugeUI.SetImageFillAmount(hp);
     }
 }

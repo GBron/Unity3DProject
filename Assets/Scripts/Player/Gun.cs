@@ -35,10 +35,10 @@ public class Gun : MonoBehaviour
         PlayShootEffect();
         _currentCount = _shootDelay;
 
-        GameObject target = RayShoot();
+        IDamagable target = RayShoot();
         if (target == null) return true;
 
-        Debug.Log($"Hit : {target.name}");
+        target.TakeDamage(_shootDamage);
 
         return true;
     }
@@ -50,14 +50,15 @@ public class Gun : MonoBehaviour
         _currentCount -= Time.deltaTime;
     }
 
-    private GameObject RayShoot()
+    private IDamagable RayShoot()
     {
         Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, _attackRange, _targetLayer))
         {
-            return hit.transform.gameObject;
+            // 이 부분을 어떻게 우회할까? 어떻게 해야 GetComponent가 계속 호출되는걸 막을 수 있을까?
+            return hit.transform.GetComponent<IDamagable>();
         }
 
         return null;

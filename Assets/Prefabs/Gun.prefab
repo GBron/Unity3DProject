@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7376662484069226999}
   - component: {fileID: 4124020013225599044}
   - component: {fileID: 140276037133686712}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50,7 +50,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   _attackRange: 50
   _shootDamage: 2
-  _shootDelay: 1.5
+  _shootDelay: 0.1
   _shootSFX: {fileID: 8300000, guid: 9bce4a50b1b5e464b9807271873885fe, type: 3}
 --- !u!114 &140276037133686712
 MonoBehaviour:
@@ -104,4 +104,4 @@ MonoBehaviour:
     m_DissipationMode: 2
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
-  m_DefaultVelocity: {x: 0, y: 0.3, z: 0}
+  m_DefaultVelocity: {x: 0.02, y: 0.05, z: -0.075}
