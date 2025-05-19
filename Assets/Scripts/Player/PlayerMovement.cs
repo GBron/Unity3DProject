@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -17,6 +18,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField][Range(0, 5)] private float _mouseSensitivity = 1;
 
     private Vector2 _currentRotation;
+
+    public Vector2 InputDirection { get; private set; }
+    public Vector2 MouseDirection { get; private set; }
+
 
     private void Awake() => Init();
 
@@ -41,13 +46,10 @@ public class PlayerMovement : MonoBehaviour
 
     public Vector3 SetAimRotation()
     {
-        Vector2 mouseDir = GetMouseDirection();
-
-
-        _currentRotation.x += mouseDir.x;
+        _currentRotation.x += MouseDirection.x;
 
         _currentRotation.y = Mathf.Clamp(
-            _currentRotation.y + mouseDir.y, 
+            _currentRotation.y + MouseDirection.y, 
             _minPitch, 
             _maxPitch
             );
@@ -75,30 +77,40 @@ public class PlayerMovement : MonoBehaviour
             );
     }
 
-    private Vector2 GetMouseDirection()
-    {
-        float mouseX = Input.GetAxis("Mouse X") * _mouseSensitivity;
-        float mouseY = -Input.GetAxis("Mouse Y") * _mouseSensitivity;
-
-        return new Vector2(mouseX, mouseY);
-    }
-
     public Vector3 GetMoveDirection()
     {
-        Vector3 input = GetInputDiretion();
-
         Vector3 direction = 
-            (transform.right * input.x) + 
-            (transform.forward * input.z);
+            (transform.right * InputDirection.x) + 
+            (transform.forward * InputDirection.y);
 
         return direction.normalized;
     }
 
-    public Vector3 GetInputDiretion()
+    public void OnMove(InputValue value)
     {
-        float x = Input.GetAxisRaw("Horizontal");
-        float z = Input.GetAxisRaw("Vertical");
-
-        return new Vector3(x, 0, z);
+        InputDirection = value.Get<Vector2>();
     }
+
+    public void OnRotate(InputValue value)
+    {
+        Vector2 mouseDir = value.Get<Vector2>();
+        mouseDir.y *= -1;
+        MouseDirection = (mouseDir * _mouseSensitivity);
+    }
+
+    // public Vector3 GetInputDiretion()
+    // {
+    //     float x = Input.GetAxisRaw("Horizontal");
+    //     float z = Input.GetAxisRaw("Vertical");
+    // 
+    //     return new Vector3(x, 0, z);
+    // }
+
+    // private Vector2 GetMouseDirection()
+    // {
+    //     float mouseX = Input.GetAxis("Mouse X") * _mouseSensitivity;
+    //     float mouseY = -Input.GetAxis("Mouse Y") * _mouseSensitivity;
+    // 
+    //     return new Vector2(mouseX, mouseY);
+    // }
 }

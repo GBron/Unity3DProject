@@ -1,20 +1,22 @@
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour, IDamagable
 {
+    [SerializeField] private InputAction _testKey;
+
     public bool IsControlActivate { get; set; } = true;
 
     private PlayerStatus _status;
     private PlayerMovement _movement;
     private PlayerAnimation _animation;
+    private InputAction _aimInputAction;
+    private InputAction _shootInputAction;
 
     [SerializeField] private CinemachineVirtualCamera _aimCamera;
     [SerializeField] private Gun _gun;
     [SerializeField] private HpGaugeUI _hpGaugeUI;
-
-    [SerializeField] private KeyCode _aimKey = KeyCode.Mouse1;
-    [SerializeField] private KeyCode _shootKey = KeyCode.Mouse0;
 
     private void Awake() => Init();
     private void OnEnable() => SubscribeEnvets();
@@ -26,6 +28,8 @@ public class PlayerController : MonoBehaviour, IDamagable
         _movement = GetComponent<PlayerMovement>();
         _status = GetComponent<PlayerStatus>();
         _animation = GetComponent<PlayerAnimation>();
+        _aimInputAction = GetComponent<PlayerInput>().actions["Aim"];
+        _shootInputAction = GetComponent<PlayerInput>().actions["Shoot"];
 
         _hpGaugeUI.SetImageFillAmount(1);
         _status.CurrentHp.Value = _status.MaxHp;
@@ -36,13 +40,13 @@ public class PlayerController : MonoBehaviour, IDamagable
         if (!IsControlActivate) return;
 
         HandleMovement();
-        HandleAiming();
+        // HandleAiming();
         HandleShooting();
     }
 
     private void HandleShooting()
     {
-        if(_status.IsAiming.Value && Input.GetKey(_shootKey))
+        if(_status.IsAiming.Value && _shootInputAction.IsPressed())
         {
             _status.IsAttacking.Value = _gun.Shoot();
         }
@@ -71,15 +75,15 @@ public class PlayerController : MonoBehaviour, IDamagable
 
         if (_status.IsAiming.Value)
         {
-            Vector3 input = _movement.GetInputDiretion();
-            _animation.SetX(input.x);
-            _animation.SetZ(input.z);
+            _animation.SetX(_movement.InputDirection.x);
+            _animation.SetZ(_movement.InputDirection.y);
         }
     }
 
-    private void HandleAiming()
+    private void HandleAiming(InputAction.CallbackContext ctx)
     {
-        _status.IsAiming.Value = Input.GetKey(_aimKey);
+        // _status.IsAiming.Value = Input.GetKey(_aimKey);
+        _status.IsAiming.Value = ctx.started;
     }
 
     public void TakeDamage(int value)
@@ -107,6 +111,10 @@ public class PlayerController : MonoBehaviour, IDamagable
         _status.IsMoving.Subscribe(_animation.SetMove);
         _status.IsAttacking.Subscribe(_animation.SetAttack);
         _status.CurrentHp.Subscribe(SetHpGaugeUI);
+
+        _aimInputAction.Enable();
+        _aimInputAction.started += HandleAiming;
+        _aimInputAction.canceled += HandleAiming;
     }
 
     public void UnsubscribeEvents()
@@ -116,6 +124,10 @@ public class PlayerController : MonoBehaviour, IDamagable
         _status.IsMoving.Unsubscribe(_animation.SetMove);
         _status.IsAttacking.Unsubscribe(_animation.SetAttack);
         _status.CurrentHp.Unsubscribe(SetHpGaugeUI);
+
+        _aimInputAction.Disable();
+        _aimInputAction.started -= HandleAiming;
+        _aimInputAction.canceled -= HandleAiming;
     }
 
     private void SetHpGaugeUI(int currentHp)

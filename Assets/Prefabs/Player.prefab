@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 1506410364977659803}
   - component: {fileID: 8834288181452288584}
   - component: {fileID: 2911907022912866291}
+  - component: {fileID: 4587450334977228445}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -126,8 +127,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71ed6bcfcd8a82a408a4f315d3712983, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <WalkSpeed>k__BackingField: 2
-  <RunSpeed>k__BackingField: 4
+  <WalkSpeed>k__BackingField: 3
+  <RunSpeed>k__BackingField: 7
   <RotateSpeed>k__BackingField: 10
   <MaxHp>k__BackingField: 500
 --- !u!114 &1506410364977659803
@@ -146,7 +147,7 @@ MonoBehaviour:
   _aim: {fileID: 4080633882716727369}
   _minPitch: -30
   _maxPitch: 30
-  _mouseSensitivity: 1
+  _mouseSensitivity: 0.15
 --- !u!114 &8834288181452288584
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,11 +160,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1a7d8a118f4ff840927ed307c2b4edf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _testKey:
+    m_Name: Test Key
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 4419615e-1ff9-4f07-9d5c-13ac1b5ed575
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
   _aimCamera: {fileID: 2063334554513377298}
   _gun: {fileID: 7653521019779257613}
   _hpGaugeUI: {fileID: 1864669477470649229}
-  _aimKey: 324
-  _shootKey: 323
 --- !u!114 &2911907022912866291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,6 +185,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _aimAnimator: {fileID: 6197267939602401527}
+--- !u!114 &4587450334977228445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2524431420298785102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: d299637a17a2d4043b2ae5f66eb0af89, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 1
+  m_DefaultControlScheme: PC
+  m_DefaultActionMap: PlayerActions
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &3343154942211755554
 GameObject:
   m_ObjectHideFlags: 0
@@ -665,6 +703,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &8534177518324993641
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3008226137194674099}
+  m_Layer: 3
+  m_Name: Muzzle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3008226137194674099
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8534177518324993641}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11838.3, y: 9954.7, z: 5969.3}
+  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3939638567791789049}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &3227312270858157520
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1052,12 +1121,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 400012, guid: 860793eb3324391468f1c120a75ec049, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3008226137194674099}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 860793eb3324391468f1c120a75ec049, type: 3}
 --- !u!4 &3939638567791788983 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400066, guid: 860793eb3324391468f1c120a75ec049, type: 3}
+  m_PrefabInstance: {fileID: 3939638567792187765}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3939638567791789049 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400012, guid: 860793eb3324391468f1c120a75ec049, type: 3}
   m_PrefabInstance: {fileID: 3939638567792187765}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5984635791492805961
@@ -1072,6 +1149,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gun
       objectReference: {fileID: 0}
+    - target: {fileID: 4124020013225599044, guid: 4ddc4687d2efe6d42bd9b689a26bc359, type: 3}
+      propertyPath: _shootDelay
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4124020013225599044, guid: 4ddc4687d2efe6d42bd9b689a26bc359, type: 3}
+      propertyPath: _muzzlePoint
+      value: 
+      objectReference: {fileID: 3008226137194674099}
+    - target: {fileID: 4124020013225599044, guid: 4ddc4687d2efe6d42bd9b689a26bc359, type: 3}
+      propertyPath: _shootDamage
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4124020013225599044, guid: 4ddc4687d2efe6d42bd9b689a26bc359, type: 3}
+      propertyPath: _fireEffectPrefab
+      value: 
+      objectReference: {fileID: 6980259576133684760, guid: 1f58a1dea6bbd9347843e4935585e6a2, type: 3}
+    - target: {fileID: 4124020013225599044, guid: 4ddc4687d2efe6d42bd9b689a26bc359, type: 3}
+      propertyPath: _shootEffectPrefab
+      value: 
+      objectReference: {fileID: 9164658656462377381, guid: f6aa9f5dfaa38fc4b9f19a9e192b1ea3, type: 3}
     - target: {fileID: 7376662484069226999, guid: 4ddc4687d2efe6d42bd9b689a26bc359, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

@@ -8,6 +8,9 @@ public class Gun : MonoBehaviour
     [SerializeField] private int _shootDamage;
     [SerializeField] private float _shootDelay;
     [SerializeField] private AudioClip _shootSFX;
+    [SerializeField] private GameObject _shootEffectPrefab;
+    [SerializeField] private GameObject _fireEffectPrefab;
+    [SerializeField] private Transform _muzzlePoint;
 
     private CinemachineImpulseSource _impulse;
 
@@ -35,7 +38,14 @@ public class Gun : MonoBehaviour
         PlayShootEffect();
         _currentCount = _shootDelay;
 
-        IDamagable target = RayShoot();
+        PlayFireEffect(_muzzlePoint);
+
+        RaycastHit hit;
+        IDamagable target = RayShoot(out hit);
+
+        if (!hit.Equals(default)) PlayShootEffect(hit.point, Quaternion.LookRotation(hit.normal));
+
+
         if (target == null) return true;
 
         target.TakeDamage(_shootDamage);
@@ -50,18 +60,33 @@ public class Gun : MonoBehaviour
         _currentCount -= Time.deltaTime;
     }
 
-    private IDamagable RayShoot()
+    private IDamagable RayShoot(out RaycastHit hitTarget)
     {
         Ray ray = new Ray(_camera.transform.position, _camera.transform.forward);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, _attackRange, _targetLayer))
         {
-            // 이 부분을 어떻게 우회할까? 어떻게 해야 GetComponent가 계속 호출되는걸 막을 수 있을까?
-            return hit.transform.GetComponent<IDamagable>();
+            hitTarget = hit;
+            return ReferenceRegistry.GetProvider(hit.collider.gameObject)?.GetAs<NormalMonster>();
         }
+        else 
+        {
+            hitTarget = default;
+            return null;
+        }
+    }
 
-        return null;
+    private void PlayShootEffect(Vector3 position, Quaternion rotation)
+    {
+        Instantiate(_shootEffectPrefab, position, rotation);
+    }
+
+    private void PlayFireEffect(Transform transform)
+    {
+        GameObject instacne = Instantiate(_fireEffectPrefab, transform.position, Quaternion.identity);
+        instacne.transform.rotation = transform.rotation;
+        Destroy(instacne, 0.15f);
     }
 
     private void PlayShootSound()
