@@ -18,6 +18,8 @@ public class NormalMonster : Monster, IDamagable
     private Collider[] _searchTargets = new Collider[5];
     private Collider[] _traceTarget = new Collider[5];
     private int _layerMask = 1 << 3;
+    private Coroutine _atkCoroutine;
+    private bool _canAttack => _atkCoroutine == null;
 
     private NavMeshAgent _navMeshAgent;
     [SerializeField] private Transform _targetTransform;
@@ -83,6 +85,8 @@ public class NormalMonster : Monster, IDamagable
             {
                 _navMeshAgent.isStopped = true;
                 IsAttacking.Value = true;
+                if (_canAttack)
+                    _atkCoroutine = StartCoroutine(AttackPlayer());
             }
             else
             {
@@ -153,5 +157,17 @@ public class NormalMonster : Monster, IDamagable
     private void AttackAnim(bool value)
     {
         _animator.SetBool("IsAttacking", value);
+    }
+
+    IEnumerator AttackPlayer()
+    {
+        yield return new WaitForSeconds(1f);
+
+        if (Physics.OverlapSphereNonAlloc(transform.position, 1f, _traceTarget, _layerMask) > 0)
+        {
+            _traceTarget[0].GetComponent<PlayerController>()?.TakeDamage(30);
+        }
+
+        _atkCoroutine = null;
     }
 }
