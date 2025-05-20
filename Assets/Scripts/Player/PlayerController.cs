@@ -1,4 +1,5 @@
 using Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,6 +14,7 @@ public class PlayerController : MonoBehaviour, IDamagable
     private PlayerAnimation _animation;
     private InputAction _aimInputAction;
     private InputAction _shootInputAction;
+    private Inventory _inventory;
 
     [SerializeField] private CinemachineVirtualCamera _aimCamera;
     [SerializeField] private Gun _gun;
@@ -30,9 +32,16 @@ public class PlayerController : MonoBehaviour, IDamagable
         _animation = GetComponent<PlayerAnimation>();
         _aimInputAction = GetComponent<PlayerInput>().actions["Aim"];
         _shootInputAction = GetComponent<PlayerInput>().actions["Shoot"];
+        _inventory = GetComponent<Inventory>();
 
         _hpGaugeUI.SetImageFillAmount(1);
         _status.CurrentHp.Value = _status.MaxHp;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        _inventory.GetItem(other.GetComponent<ItemObject>().Data);
+        other.gameObject.SetActive(false);
     }
 
     private void HandlePlayerControl()
@@ -42,6 +51,13 @@ public class PlayerController : MonoBehaviour, IDamagable
         HandleMovement();
         // HandleAiming();
         HandleShooting();
+
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            if(_inventory.IsEmpty) return;
+
+            _inventory.UseItem(0);
+        }
     }
 
     private void HandleShooting()
